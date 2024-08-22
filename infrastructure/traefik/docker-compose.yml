@@ -1,0 +1,106 @@
+version: "3.9"
+
+services:
+  traefik:
+    image: traefik:latest
+    command:
+      - --log.level=DEBUG
+      - --entrypoints.httpa.address=:80
+      - --providers.docker=true
+      - --providers.docker.exposedByDefault=true
+      - --providers.docker.swarmMode=true
+      - --api=true
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --accesslog=true
+      - --providers.docker.watch=true
+       
+      
+    networks:
+      - ovencrypt
+      
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - certs:/letsencrypt
+    
+    ports:
+      - 80:80
+        
+      
+    deploy:
+      mode: global
+      placement:
+        constraints: 
+          - node.role == manager      
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.traefikae.rule=Host(`traefik.onekana.ke`)" 
+        - "traefik.http.services.traefikae.loadbalancer.server.port=8080"
+        - "traefik.docker.network=ovencrypt"
+        - "traefik.http.middlewares.traefikae-auth.basicauth.users=micha:$$2y$$05$$NrR4hl3V7uCFT8nOdc5ZC.1AHuTjx4ysafhpBe2s0xX12eCG81VUO"
+        - "traefik.http.routers.traefikae.middlewares=traefikae-auth"
+          
+  
+  net:
+    image: praqma/network-multitool
+    
+    networks:
+      - ovencrypt
+    
+    deploy:
+      mode: global
+      
+               
+  nginxa:
+    image: nginx
+    
+    networks:
+      - ovencrypt
+    
+    deploy:
+      mode: global
+      placement:
+        constraints: 
+          - node.role == worker
+    
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.nginxa.rule=Host(`nginx.onekana.ke`)"   
+        - "traefik.http.services.nginxa.loadbalancer.server.port=80"
+        - "traefik.docker.network=ovencrypt"
+        
+  visualizer:
+    image: dockersamples/visualizer
+    
+    
+    networks:
+      - ovencrypt
+    
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    
+    deploy:
+      mode: global
+      placement:
+        constraints: 
+          - node.role == manager
+          
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.visualizer.rule=Host(`swarm.onekana.ke`)"   
+        - "traefik.http.services.visualizer.loadbalancer.server.port=8080"
+        - "traefik.docker.network=ovencrypt"
+        - "traefik.http.routers.visualizer.middlewares=traefikae-auth"
+        
+   
+volumes:
+  agent-volume:
+  certs:
+  portainer-data:
+    
+networks:
+  ovencrypt:
+    external: true
+    attachable: true
+    
+  agent-network:

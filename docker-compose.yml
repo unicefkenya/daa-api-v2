@@ -1,0 +1,32 @@
+version: "3.8"
+services:
+  
+  api:
+    image: dockerhubusername/moekeapi:v1.0.11 # Location with a Dockerfile
+    restart: always
+    depends_on:
+      - db
+      - memcached
+    ports:
+      - 8000:8000
+  
+  memcached:
+    image: memcached:latest
+    ports:
+      - "11211:11211"
+
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: VKMCrEDlMGYjSe3
+      POSTGRES_USER: moeke
+      POSTGRES_DB: moekeapi
+    volumes:
+      - pg:/var/lib/postgresql/data
+    ports:
+      - 3001:3000
+
+volumes:
+  pg:

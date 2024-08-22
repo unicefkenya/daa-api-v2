@@ -1,0 +1,28 @@
+SECRET_KEY="secred_key"
+ALLOWED_HOSTS="localhost,api.domain.com"
+DOCS_TITLE="Onekana"
+DOCS_SUB_TITLE="API Docs"
+DOCS_LOGO="htpps://path/logo.png"
+DB_NAME="databse_name"
+DB_USER="db_user"
+DB_PASSWORD="db_password"
+DB_HOST="db_host"
+DB_PORT=5432
+
+# For Storing MEdia files
+USE_S3=true # or false
+AWS_ACCESS_KEY_ID=""
+AWS_SECRET_ACCESS_KEY=""
+AWS_STORAGE_BUCKET_NAME=""
+AWS_S3_REGION_NAME=""
+AWS_S3_ENDPOINT_URL=""
+
+AWS_STATIC_LOCATION="" # folder name insdied the bucket
+AWS_MEDIA_LOCATION="" #  folder name insdied the bucket
+
+# If using file storage
+STATIC_ROOT=""
+STATIC_URL=""
+
+MEDIA_ROOT=""
+MEDIA_URL=""

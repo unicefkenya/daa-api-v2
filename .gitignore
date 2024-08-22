@@ -1,0 +1,15 @@
+db.sqlite3
+wvapi/settings/local.py
+wvapi/settings/local.pyc
+*.pyc
+.idea/
+.DS_Store
+build/
+test/
+template.zip
+generateTemplate.sh
+client/management/
+.vscode/
+test_media
+test_static
+.env

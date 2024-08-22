@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+SCTRIPTS_FOLDER=$(dirname "${0}")
+cd $SCTRIPTS_FOLDER/../
+source ../env/bin/activate
+echo -e "\n$(pwd)\n"
+
+./manage.py test

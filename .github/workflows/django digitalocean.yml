@@ -1,0 +1,101 @@
+name: Django CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+
+env:
+  LIBRARY_PATH: /home/gocd/openssl/lib
+  CPATH: /home/gocd/openssl/include
+  openssl: /home/gocd/openssl/bin/openssl
+  DESTINATION_FOLDER: /home/daa/apps/django/moekeapi
+  SERVER: 142.93.33.22
+  SERVER_USER: root
+
+jobs:
+  build:
+    name: Testing
+
+    runs-on: python1
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create Virtual Environment
+        run: |
+          virtualenv venv --python=python3.8
+          mkdir test_static || true
+          mkdir test_media || true
+
+      - name: Install Dependencies
+        if: "!contains(github.event.head_commit.message, 'test skip')"
+        run: |
+          source venv/bin/activate
+          pip install -r requirements.txt
+
+      - name: Testing
+        if: "!contains(github.event.head_commit.message, 'test skip')"
+        run: |
+          source venv/bin/activate
+          python manage.py test
+
+  digitalocean:
+    name: Get digital ocean ips
+    needs: [build]
+    runs-on: python1
+    steps:
+      - name: Getting the ips
+        id: getips
+        uses: michameiu/digital-ocean-action@v1.10
+        with:
+          droplet-tag: dapi
+          digitalocean-access-token: ${{ secrets.DIGITALOCEAN_TOKEN }}
+
+    outputs:
+      ips: ${{ steps.getips.outputs.ip_addresses }}
+
+  deploy_physical:
+    runs-on: python1
+    needs: [build]
+    name: Deploying and Restarting to kenya Sciennce
+    steps:
+      - name: Deploying
+        run: |
+          rm -rf test_static test_media venv || true
+          # rsync -av -e ssh --exclude='.git' --exclude='__pycache__' --exclude='venv'  --exclude='*.pyc' --exclude="local.py"   -r . SERVER_USER@$SERVER:$DESTINATION_FOLDER
+
+      - name: Restarting and migrating Deployments
+        run: |
+          ls 
+          # ssh SERVER_USER@$SERVER <<EOF $DESTINATION_FOLDER/scripts/update EOF
+
+  deploy:
+    name: Deploying and Restarting Servers
+    needs: [build, digitalocean]
+    strategy:
+      fail-fast: false
+      max-parallel: 20
+      matrix:
+        droplet: ${{ fromJSON(needs.digitalocean.outputs.ips) }}
+    runs-on: python1
+    # if: $bundleType == 'bundle
+    steps:
+      - name: Add host keys
+        run: |
+          ssh-keygen -R ${{ matrix.droplet }}|| true
+          ssh-keyscan  -T 100 -t rsa -4 ${{ matrix.droplet }}  >> ~/.ssh/known_hosts || true
+
+      - name: Deploying
+        run: |
+          rm -rf test_static test_media venv || true
+          rsync -av -e ssh --exclude='.git' --exclude='__pycache__' --exclude='venv'  --exclude='*.pyc' --exclude="local.py"   -r . $SERVER_USER@${{ matrix.droplet }}:$DESTINATION_FOLDER
+
+      - name: Restarting and migrating Deployments
+        run: |
+          ssh $SERVER_USER@${{ matrix.droplet }} <<EOF $DESTINATION_FOLDER/../update_api.sh EOF
+
+    # - name: Run Tests
+    #  run: |
+    #   python manage.py test
