@@ -23,15 +23,13 @@ from dotenv import load_dotenv
 dotenv_filepath = (Path(__file__).parent/ "../../.env").resolve()
 load_dotenv(dotenv_filepath)
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
-
 # SECURITY WARNING: keep the secret key used in production secret!
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+
 USE_X_FORWARDED_HOST = True
 
 
@@ -225,16 +223,15 @@ USE_S3 = os.getenv("USE_S3", "False")=="True"
 
 
 if USE_S3:
-    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID") # eg  "ADE24H4CX8MWW9D2LV"
-    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY") # eg "1djabhiud78adadta768cponeEjG5fnUy2Do"
-    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME") # eg "onekanapi"
-    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME") # eg "fra1"  # replace with the region where your bucket is located
-    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")# eg "https://onekanapi.fra1.digitaloceanspaces.com"  # replace with the endpoint URL for your region
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID") # eg  
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY") # 
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME") #
+    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME") # eg  #
+    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")# eg
     AWS_S3_OBJECT_PARAMETERS = {
         "CacheControl":  f"max-age={int(os.getenv('AWS_S3_MAX_AGE','86400'))}",
     }
 
-    # DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
     AWS_STATIC_LOCATION = os.getenv("AWS_STATIC_LOCATION") # eg "static"
     STATIC_URL = "%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_STATIC_LOCATION)
     STATICFILES_STORAGE = "wvapi.storage.StaticStorage"

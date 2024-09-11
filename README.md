@@ -105,7 +105,20 @@ python manage.py test
 
 If the tests pass successfully, your environment is ready!
 
-### 6. Adding Reasons for Absence and Deletion in Django Admin
+### 6. Create a Superuser
+
+Run the following command to start the process of creating a superuser.
+```bash
+python manage.py createsuperuser
+```
+
+Docker
+```
+docker exec -it <container_id> python manage.py createsuperuser
+```
+
+
+### 7. Adding Reasons for Absence and Deletion in Django Admin
 
 To add and manage the "reason for absence" and "reason for deletion" options, follow these steps in the Django admin panel:
 
