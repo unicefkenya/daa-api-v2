@@ -28,14 +28,11 @@ class BaseAPITest(APITestCase):
         resp = self.assertEqual(resp.status_code, 401)
         # print(resp.json())
 
-        resp = self.create_region()
-
-        resp = self.create_district()
-
+        
         resp = self.create_county()
         resp = self.create_sub_county()
 
-        resp = self.create_village()
+  
 
         resp = self.create_special_need()
         resp = self.create_special_need(name="Health")
@@ -70,9 +67,6 @@ class BaseAPITest(APITestCase):
         data = {"name": name}
         return self.auth_client.post(reverse("list_create_countys"), data=data)
 
-    def create_region(self, name="TheRegion"):
-        data = {"name": name}
-        return self.client.post(reverse("list_create_regions"), data=data)
 
     def create_user(self):
         self.set_authenticated_user(1)
@@ -81,14 +75,6 @@ class BaseAPITest(APITestCase):
 
     def set_authenticated_user(self, user_id=2):
         self.auth_client.force_authenticate(user=MyUser.objects.get(id=user_id))
-
-    def create_village(self, name="TheVillage", district=1):
-        data = {"name": name, "district": district, "lat": -1.323323, "lng": 36.434}
-        return self.auth_client.post(reverse("list_create_villages"), data=data)
-
-    def create_district(self, name="TheDistrict", region=1):
-        data = {"name": name, "region": region}
-        return self.auth_client.post(reverse("list_create_districts"), data=data)
 
     def create_school(self, name="TheSchool", emis_code="345", sub_county=1):
         data = {"name": name, "emis_code": emis_code, "village": 1, "sub_county": sub_county}

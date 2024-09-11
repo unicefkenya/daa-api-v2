@@ -1,5 +1,0 @@
-#!/bin/bash
-set -e
-./manage.py test
-git push heroku master
-heroku run ./manage.py migrate

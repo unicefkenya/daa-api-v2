@@ -105,10 +105,6 @@ LEARNER_MIN_AGE = 3
 LEARNER_MAX_AGE = 30
 ROOT_URLCONF = "wvapi.urls"
 
-MOE_UERNAME = ""
-MOE_PASSWORD = ""
-MOE_BASE_URL = ""
-MOE_DATE_FORMAT = "%d/%m/%Y"
 
 REST_FRAMEWORK = {"DEFAULT_FILTER_BACKENDS": ("django_filters.rest_framework.DjangoFilterBackend",)}
 
@@ -130,7 +126,7 @@ OAUTH2_PROVIDER = {
 AUTH_USER_MODEL = "client.MyUser"
 
 WSGI_APPLICATION = "wvapi.wsgi.application"
-
+MY_SITE_URL=""
 
 CUSTOM_REPORTS = (("overall", "General Overall Report"),)
 
@@ -222,12 +218,37 @@ USE_L10N = True
 
 USE_TZ = True
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+#
 
-# STATIC_URL = "/static/"
 
-# MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
-# MEDIA_URL = "/media/"
+USE_S3 = os.getenv("USE_S3", "False")=="True"
 
-###Errors list
+
+if USE_S3:
+    AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID") # eg  "ADE24H4CX8MWW9D2LV"
+    AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY") # eg "1djabhiud78adadta768cponeEjG5fnUy2Do"
+    AWS_STORAGE_BUCKET_NAME = os.getenv("AWS_STORAGE_BUCKET_NAME") # eg "onekanapi"
+    AWS_S3_REGION_NAME = os.getenv("AWS_S3_REGION_NAME") # eg "fra1"  # replace with the region where your bucket is located
+    AWS_S3_ENDPOINT_URL = os.getenv("AWS_S3_ENDPOINT_URL")# eg "https://onekanapi.fra1.digitaloceanspaces.com"  # replace with the endpoint URL for your region
+    AWS_S3_OBJECT_PARAMETERS = {
+        "CacheControl":  f"max-age={int(os.getenv('AWS_S3_MAX_AGE','86400'))}",
+    }
+
+    # DEFAULT_FILE_STORAGE = "storages.backends.s3boto3.S3Boto3Storage"
+    AWS_STATIC_LOCATION = os.getenv("AWS_STATIC_LOCATION") # eg "static"
+    STATIC_URL = "%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_STATIC_LOCATION)
+    STATICFILES_STORAGE = "wvapi.storage.StaticStorage"
+    
+
+    AWS_MEDIA_LOCATION = os.getenv("AWS_MEDIA_LOCATION") # eg "media"
+    MEDIA_URL = "%s/%s/" % (AWS_S3_ENDPOINT_URL, AWS_MEDIA_LOCATION)
+    DEFAULT_FILE_STORAGE = "wvapi.storage.MediaStorage"
+
+else:
+    # STATIC_ROOT = os.path.join(BASE_DIR, "uploads")
+    STATIC_ROOT = os.getenv("STATIC_ROOT","./test_static") 
+    STATIC_URL = os.getenv("STATIC_URL","/static/")
+
+    # MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
+    MEDIA_ROOT = os.getenv("MEDIA_ROOT","./test_media") 
+    MEDIA_URL = os.getenv("MEDIA_URL","/media/") 

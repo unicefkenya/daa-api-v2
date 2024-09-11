@@ -21,7 +21,6 @@ from oauth2_provider.models import AccessToken, Application
 from oauthlib.common import generate_token
 
 from mylib.my_common import MySendEmail
-from wvapi.settings import MY_SITE_URL
 from django.contrib.auth import get_user_model
 
 
@@ -129,7 +128,7 @@ def my_user_handler(sender, **kwargs):
         token = generate_token()
         app = Application.objects.first()
         AccessToken.objects.create(user=user, application=app, expires=now() + timedelta(days=1), token=token)
-        link = "%s/verify-account?token=%s&confirm_code=%s" % (MY_SITE_URL, token, instance.confirm_code)
+        link = "%s/verify-account?token=%s&confirm_code=%s" % ("", token, instance.confirm_code)
         data = {"name": user.first_name, "verify_url": link, "old_password": instance.old_password}
         instance.old_password = None
         instance.save()

@@ -1,10 +1,10 @@
 from .base import *
+import os
 
 try:
     from .local import *
-    live=False
+    
 except:
-    live=True
+    pass
 
-if live:
-    from .production import *
+

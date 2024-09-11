@@ -4,40 +4,6 @@ from django.db import models
 from mylib.mygenerics import MyModel
 
 
-class Region(MyModel):
-    name = models.CharField(unique=True, max_length=45)
-
-    def __str__(self):
-        return "{}".format(self.name)
-
-    class Meta:
-        ordering = ("id",)
-
-
-class District(MyModel):
-    region = models.ForeignKey(Region, related_name="districts", on_delete=models.CASCADE)
-    name = models.CharField(unique=True, max_length=45)
-
-    def __str__(self):
-        return "{}->{}".format(self.region.name, self.name)
-
-    class Meta:
-        ordering = ("id",)
-
-
-class Village(MyModel):
-    district = models.ForeignKey(District, related_name="villages", on_delete=models.CASCADE)
-    name = models.CharField(unique=True, max_length=45)
-    lat = models.FloatField(null=True, blank=True)
-    lng = models.FloatField(null=True, blank=True)
-
-    def __str__(self):
-        return "{}->{}->{}".format(self.district.region.name, self.district.name, self.name)
-
-    class Meta:
-        ordering = ("id",)
-
-
 class County(MyModel):
     name = models.CharField(unique=True, max_length=45)
     number = models.CharField(null=True, blank=True, max_length=45)

@@ -21,26 +21,20 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-from wv_statistics.views import GetAllReport, Ping
+from wv_statistics.views import Ping
 
 urlpatternsv1 = [
-    # url(r'^clients/',include('client.urlsV1')),
-    # url(r'^games/',include('game.urlsV1')),
     url(r"^users/", include("client.urlsv1")),
     url(r"^attendances/", include("attendance.urlsv1")),
     url(r"^schools/", include("school.urlsv1")),
-    url(r"^statistics/", include("wv_statistics.urlsv1")),
     url(r"^regions/", include("region.urlsv1")),
     url(r"^schools/", include("school.urlsv1")),
+     url(r"^statistics/", include("wv_statistics.urlsv1")),
     url(r"^support-questions/", include("support_question.urlsv1")),
-    url(r"^districts/", include("region.district.urlsv1")),
-    url(r"^villages/", include("region.village.urlsv1")),
-    url(r"^stats/", include("stats.urls")),
     url(r"^teachers/", include("school.teacher.urlsv1")),
     url(r"^streams/", include("school.stream.urlsv1")),
     url(r"^students/", include("school.student.urlsv1")),
     url(r"^promotions/", include("school.promotion.urlsv1")),
-    # url("^exports/",include("stats.exports.urls")),
     url("^downloads/", include("stats.exports.urls")),
     url(r"^students-delete-reasons/", include("school.delete_reason.urlsv1")),
     url(r"^students-absent-reasons/", include("school.absent_reason.urlsv1")),
@@ -71,4 +65,3 @@ urlpatterns = [
 urlpatterns += staticfiles_urlpatterns()
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-print(static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT))

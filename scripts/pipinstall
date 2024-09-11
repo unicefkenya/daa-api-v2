@@ -1,9 +1,0 @@
-#!/bin/bash
-set -e
-SCTRIPTS_FOLDER=$(dirname "${0}")
-cd $SCTRIPTS_FOLDER/../
-source ../env/bin/activate
-
-echo -e "\n$(pwd)\n"
-# pip  install --upgrade pip setuptools==39.2.0
-pip install -r requirements.txt

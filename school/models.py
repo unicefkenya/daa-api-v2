@@ -14,7 +14,7 @@ from multiselectfield import MultiSelectField
 from client.models import MyUser
 from mylib.my_common import case_generator
 from mylib.mygenerics import GroupConcat, MyModel
-from region.models import Village, SubCounty
+from region.models import  SubCounty
 from django.utils.dateparse import parse_date
 from datetime import date
 from django.db.models import Case, When, Value
