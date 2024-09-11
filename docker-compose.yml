@@ -36,7 +36,7 @@ services:
       MEDIA_URL: http://localhost:8888/media/
       STATIC_URL: http://localhost:8888/static/
       DOCS_TITLE: Digital Attendance Application API
-      DOCS_SUB_TITLE: "API Docs"
+      DOCS_SUB_TITLE: API Docs
       DOCS_LOGO: https://www.unicef.org/sites/default/files/styles/logo/public/English_9.png.webp?itok=KaPGNxiU
 
     ports:
