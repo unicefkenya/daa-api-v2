@@ -21,8 +21,7 @@ RUN pip install django-user-agents==0.4.0
 COPY . /app
 EXPOSE 8000
 
-RUN python3 manage.py makemigrations && python manage.py migrate
 RUN cp /app/wvapi/settings/dock.prod.py /app/wvapi/settings/local.py 
 
 
-CMD  gunicorn wvapi.wsgi:application --workers=2 --timeout=120  -b 0.0.0.0:8000
+CMD (python manage.py migrate || true) && (python manage.py collectstatic --noinput || true) &&  gunicorn wvapi.wsgi:application --workers=2 --timeout=120  -b 0.0.0.0:8000
