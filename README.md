@@ -49,7 +49,7 @@ services:
 
     environment:
       SECRET_KEY: p9878787629839823
-      DB_PASSWORD: VKMCrEDlMGYjSe3
+      DB_PASSWORD: test_password
       DB_USER: moeke
       DB_NAME: moekeapi 
       DB_HOST: db
@@ -71,7 +71,7 @@ services:
 
     environment:
       SECRET_KEY: p9878787629839823
-      DB_PASSWORD: VKMCrEDlMGYjSe3
+      DB_PASSWORD: test_password
       DB_USER: moeke
       DB_NAME: moekeapi 
       DB_HOST: db
@@ -92,7 +92,7 @@ services:
     networks:
       - db
     environment:
-      POSTGRES_PASSWORD: VKMCrEDlMGYjSe3
+      POSTGRES_PASSWORD: test_password
       POSTGRES_USER: moeke
       POSTGRES_DB: moekeapi
     volumes:
