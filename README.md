@@ -26,7 +26,7 @@ It is comprised of three components:
 version: "3.8"
 services:
   
-  media:
+  nginxmedia:
     image: nginx:1.15
     networks:
       - db
@@ -39,38 +39,54 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
 
   api:
-    image: sisitechdev/daa-v2-api:v1.0.1 # Location with a Dockerfile
+    image: sisitechdev/daa-v2-api:v1.0.0 # Location with a Dockerfile
     restart: always
     depends_on:
       - db
       - memcached
     networks:
       - db
+    volumes:
+      - media:/media
+      - static:/static
 
     environment:
-      SECRET_KEY: p9878787629839823
+      SECRET_KEY: test_secret_key
       DB_PASSWORD: test_password
       DB_USER: moeke
       DB_NAME: moekeapi 
       DB_HOST: db
+      MEDIA_ROOT: /media
+      STATIC_ROOT: /static
+      MEDIA_URL: http://localhost:8888/media/
+      STATIC_URL: http://localhost:8888/static/
+      DOCS_TITLE: Digital Attendance Application API
+      DOCS_SUB_TITLE: API Docs
+      DOCS_LOGO: https://www.unicef.org/sites/default/files/styles/logo/public/English_9.png.webp?itok=KaPGNxiU
 
     ports:
       - 8020:8000
+    
+    
   
   background_tasks:
-    image: sisitechdev/daa-v2-api:v1.0.1 # Location with a Dockerfile
+    image: sisitechdev/daa-v2-api:v1.0.0 # Location with a Dockerfile
     restart: always
     command: python manage.py process_tasks
 
     depends_on:
       - db
       - memcached
+      - api
     
     networks:
       - db
+    volumes:
+      - media:/media
+      - static:/static
 
     environment:
-      SECRET_KEY: p9878787629839823
+      SECRET_KEY: test_secret_key
       DB_PASSWORD: test_password
       DB_USER: moeke
       DB_NAME: moekeapi 
@@ -97,15 +113,15 @@ services:
       POSTGRES_DB: moekeapi
     volumes:
       - pg:/var/lib/postgresql/data
-    ports:
-      - 3001:3000
-    
+
     
 networks:
   db:
 
 volumes:
   pg:
+  media:
+  static:
 ```
 ### API Documentation
 After the API is up and running, the documentation is served at the root URL:  
