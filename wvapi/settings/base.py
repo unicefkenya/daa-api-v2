@@ -148,7 +148,7 @@ AUTHENTICATION_BACKENDS = (
 DOCS_TITLE = os.getenv("DOCS_TITLE","Digital Attendance Application Kenya") 
 DOCS_SUB_TITLE = os.getenv("DOCS_SUB_TITLE", "API Endpoints")
 
-DOCS_LOGO = DOCS_SUB_TITLE = os.getenv("DOCS_SUB_TITLE", "https://onekana.naconek.ke/assets/images/kenya_logo.png")
+DOCS_LOGO  = os.getenv("DOCS_LOGO", "https://onekana.naconek.ke/assets/images/kenya_logo.png")
 
 TEMPLATES = [
     {

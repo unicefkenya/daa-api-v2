@@ -16,6 +16,10 @@ It is comprised of three components:
 
 ---
 
+# Pre-Built Docker image
+[sisitechdev/daa-v2-api](https://hub.docker.com/r/sisitechdev/daa-v2-api)
+
+
 # Setup Guide
 
 ## Prerequisites

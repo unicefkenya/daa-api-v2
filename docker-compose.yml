@@ -1,7 +1,7 @@
 version: "3.8"
 services:
   
-  media:
+  nginxmedia:
     image: nginx:1.15
     networks:
       - db
@@ -12,41 +12,57 @@ services:
       - media:/usr/share/nginx/media
       - static:/usr/share/nginx/static
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
-      
+
   api:
-    image: michameiu/daa-v2-api:v1.0.1 # Location with a Dockerfile
+    image: sisitechdev/daa-v2-api:v1.0.0 # Location with a Dockerfile
     restart: always
     depends_on:
       - db
       - memcached
     networks:
       - db
+    volumes:
+      - media:/media
+      - static:/static
 
     environment:
-      SECRET_KEY: p9878787629839823
-      DB_PASSWORD: VKMCrEDlMGYjSe3
+      SECRET_KEY: test_secret_key
+      DB_PASSWORD: test_password
       DB_USER: moeke
       DB_NAME: moekeapi 
       DB_HOST: db
+      MEDIA_ROOT: /media
+      STATIC_ROOT: /static
+      MEDIA_URL: http://localhost:8888/media/
+      STATIC_URL: http://localhost:8888/static/
+      DOCS_TITLE: Digital Attendance Application API
+      DOCS_SUB_TITLE: "API Docs"
+      DOCS_LOGO: https://www.unicef.org/sites/default/files/styles/logo/public/English_9.png.webp?itok=KaPGNxiU
 
     ports:
       - 8020:8000
+    
+    
   
   background_tasks:
-    image: michameiu/daa-v2-api:v1.0.1 # Location with a Dockerfile
+    image: sisitechdev/daa-v2-api:v1.0.0 # Location with a Dockerfile
     restart: always
     command: python manage.py process_tasks
 
     depends_on:
       - db
       - memcached
+      - api
     
     networks:
       - db
+    volumes:
+      - media:/media
+      - static:/static
 
     environment:
-      SECRET_KEY: p9878787629839823
-      DB_PASSWORD: VKMCrEDlMGYjSe3
+      SECRET_KEY: test_secret_key
+      DB_PASSWORD: test_password
       DB_USER: moeke
       DB_NAME: moekeapi 
       DB_HOST: db
@@ -67,7 +83,7 @@ services:
     networks:
       - db
     environment:
-      POSTGRES_PASSWORD: VKMCrEDlMGYjSe3
+      POSTGRES_PASSWORD: test_password
       POSTGRES_USER: moeke
       POSTGRES_DB: moekeapi
     volumes:
@@ -81,3 +97,5 @@ networks:
 
 volumes:
   pg:
+  media:
+  static:
